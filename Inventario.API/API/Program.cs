@@ -45,7 +45,7 @@ builder.Services.AddScoped<IUbicacionFlujo, UbicacionFlujo>();
 // MÓDULO DE REPORTES
 // ==========================================
 builder.Services.AddScoped<IReportesHelper, ReportesHelper>();
-
+builder.Services.AddScoped<IImportadorExcelHelper, ImportadorExcelHelper>();
 // ==========================================
 // Configuración
 // ==========================================

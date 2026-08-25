@@ -81,7 +81,7 @@ namespace API.Controllers
 
         #endregion
 
-        #region Reportes
+        #region Reportes 
 
         [HttpGet("ExportarExcel")]
         public async Task<IActionResult> ExportarExcel([FromServices] IReportesHelper reportesHelper)
@@ -99,6 +99,58 @@ namespace API.Controllers
             var archivoBytes = reportesHelper.GenerarPdfInventario(activos);
 
             return File(archivoBytes, "application/pdf", "Inventario_Cerbatana.pdf");
+        }
+
+
+
+        [HttpGet("DescargarPlantilla")]
+        public IActionResult DescargarPlantilla([FromServices] IImportadorExcelHelper importadorHelper)
+        {
+            var archivoBytes = importadorHelper.GenerarPlantillaVacia();
+            return File(archivoBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Plantilla_Carga_Masiva_Activos.xlsx");
+        }
+
+        [HttpPost("ImportarExcel/{idCategoria}")]
+        public async Task<IActionResult> ImportarExcel(
+            [FromRoute] Guid idCategoria,
+            IFormFile archivo,
+            [FromServices] IImportadorExcelHelper importadorHelper,
+            [FromServices] IUbicacionFlujo ubicacionFlujo) // Inyectamos flujo de ubicaciones para el traductor
+        {
+            if (archivo == null || archivo.Length == 0)
+                return BadRequest("Debes seleccionar un archivo Excel válido.");
+
+            if (!archivo.FileName.EndsWith(".xlsx"))
+                return BadRequest("El archivo debe ser de tipo Excel (.xlsx).");
+
+            try
+            {
+                // 1. Obtenemos todas las ubicaciones vigentes en el sistema para enviárselas al traductor
+                var ubicacionesSistema = await ubicacionFlujo.Obtener();
+
+                // 2. Abrimos el archivo Excel y extraemos los activos mapeados
+                using var stream = archivo.OpenReadStream();
+                var listaActivos = importadorHelper.LeerActivosDeExcel(stream, ubicacionesSistema, idCategoria);
+
+                if (!listaActivos.Any())
+                    return BadRequest("El archivo Excel está vacío o no contiene filas válidas.");
+
+                // 3. Guardamos cada activo leído en la base de datos de manera secuencial
+                int guardados = 0;
+                foreach (var activo in listaActivos)
+                {
+                    await _inventarioFlujo.Agregar(activo);
+                    guardados++;
+                }
+
+                return Ok(new { Mensaje = "Carga masiva finalizada con éxito", TotalRegistrados = guardados });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error procesando el archivo Excel de carga masiva.");
+                // Retorna el mensaje exacto del error (por ejemplo, si una ubicación no existía)
+                return BadRequest(ex.Message);
+            }
         }
         #endregion
     }

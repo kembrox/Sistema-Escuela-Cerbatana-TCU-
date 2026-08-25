@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Abstracciones.Interfaces.Reglas;
+﻿using Abstracciones.Interfaces.Reglas;
 using Abstracciones.Modelos;
 using ClosedXML.Excel;
 using QuestPDF.Fluent;
