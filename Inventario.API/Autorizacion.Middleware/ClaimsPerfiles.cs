@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Abstracciones.Interfaces.Flujo.Seguridad;
 using Abstracciones.Modelos.Seguridad;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -84,6 +85,16 @@ namespace Autorizacion.Middleware
             var nombreUsuario = httpContext.User.Claims.Where(c => c.Type == "usuario").FirstOrDefault()?.Value;
 
             return await _seguridadFlujo.ObtenerPerfilesxUsuario(new Usuario { NombreUsuario = nombreUsuario });
+        }
+
+       
+    }
+
+    public static class ClaimsUsuarioMiddlewareExtensions
+    {
+        public static IApplicationBuilder AutorizacionClaims(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<ClaimsPerfiles>();
         }
     }
 }

@@ -1,0 +1,52 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Inicio";
+}
+
+<div class="text-center mt-5">
+    <h1 class="display-4 text-primary fw-bold">Sistema de Inventario</h1>
+    <h2 class="text-secondary">Escuela Cerbatana</h2>
+
+    <hr class="my-4 w-75 mx-auto border-secondary-subtle" />
+
+    @* Verificamos si el usuario tiene una sesión activa mediante la cookie *@
+    @if (User.Identity != null && User.Identity.IsAuthenticated)
+    {
+        <div class="alert alert-success mt-4 w-75 mx-auto shadow-sm" role="alert">
+            <h4 class="alert-heading"><i class="bi bi-person-check-fill me-2"></i>¡Bienvenido, @User.Identity.Name!</h4>
+            <p class="mb-0">Has iniciado sesión correctamente. Selecciona un módulo para comenzar a trabajar.</p>
+        </div>
+
+        <div class="row mt-5 justify-content-center">
+            <div class="col-md-3 mb-3">
+                <a href="/Categorias" class="btn btn-outline-primary w-100 py-4 shadow-sm">
+                    <i class="bi bi-tags-fill fs-1 d-block mb-2"></i> Categorías
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Ubicaciones" class="btn btn-outline-primary w-100 py-4 shadow-sm">
+                    <i class="bi bi-geo-alt-fill fs-1 d-block mb-2"></i> Ubicaciones
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="/Inventarios" class="btn btn-outline-primary w-100 py-4 shadow-sm">
+                    <i class="bi bi-box-seam-fill fs-1 d-block mb-2"></i> Activos
+                </a>
+            </div>
+        </div>
+    }
+    else
+    {
+        @* Vista para usuarios que no han iniciado sesión *@
+        <div class="mt-5">
+            <p class="lead text-muted mb-5">
+                Gestión y control de activos institucionales. Por favor, identifíquese para acceder al sistema.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/Cuenta/Login" class="btn btn-primary btn-lg px-5 shadow-sm">Iniciar Sesión</a>
+                <a href="/Cuenta/Registro" class="btn btn-outline-secondary btn-lg px-5 shadow-sm">Registrarse</a>
+            </div>
+        </div>
+    }
+</div>

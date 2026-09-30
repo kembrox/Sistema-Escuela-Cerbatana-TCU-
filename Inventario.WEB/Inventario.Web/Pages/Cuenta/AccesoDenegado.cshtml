@@ -1,0 +1,37 @@
+﻿@page
+@model Inventario.Web.Pages.Cuenta.AccesoDenegadoModel
+@{
+    ViewData["Title"] = "Acceso Denegado";
+}
+
+<header class="subhead bg-danger text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="col-xl-6 col-lg-7 mx-auto bg-white p-4 p-md-5 rounded shadow text-center">
+
+            <i class="bi bi-shield-lock-fill text-danger" style="font-size: 4rem;"></i>
+
+            <h2 class="section-heading text-uppercase mt-3">Acceso Restringido</h2>
+            <h3 class="section-subheading text-muted mt-2">
+                Lo sentimos, no tienes los permisos necesarios para ver esta página o realizar esta acción.
+            </h3>
+
+            <hr class="my-4 border-secondary-subtle" />
+
+            <p class="text-muted">Si crees que esto es un error, por favor contacta al administrador del sistema escolar.</p>
+
+            <div class="mt-4">
+                <a href="/Index" class="btn btn-primary btn-lg">
+                    <i class="bi bi-house-door-fill me-2"></i>Volver al inicio
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>

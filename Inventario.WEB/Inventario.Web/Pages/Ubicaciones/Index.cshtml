@@ -1,0 +1,81 @@
+﻿@page
+@model Inventario.Web.Pages.Ubicaciones.IndexModel
+@{
+    ViewData["Title"] = "Listado de Ubicaciones";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Listado de Ubicaciones</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-heading text-uppercase">Ubicaciones de la Escuela</h2>
+            <h3 class="section-subheading text-muted">Gestione los espacios físicos donde se encuentran los activos.</h3>
+        </div>
+
+        <div class="text-center mb-4">
+            <a type="button" class="btn btn-success btn-lg shadow-sm" asp-page="./Agregar">
+                <i class="bi bi-plus-square me-2"></i> Agregar Nueva Ubicación
+            </a>
+        </div>
+
+        <div class="row">
+            @if (Model.Ubicaciones != null && Model.Ubicaciones.Any())
+            {
+                @foreach (var ubicacion in Model.Ubicaciones)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+
+                                <h5 class="card-title text-primary mb-2">
+                                    <i class="bi bi-geo-alt-fill me-2"></i>@Html.DisplayFor(modelo => ubicacion.Nombre)
+                                </h5>
+
+                                <p class="card-text text-muted mb-2">
+                                    <strong>Tipo de Área:</strong> @(string.IsNullOrEmpty(ubicacion.TipoArea) ? "No especificado" : ubicacion.TipoArea)
+                                </p>
+
+                                <div class="mb-4">
+                                    @if (ubicacion.Estado)
+                                    {
+                                        <span class="badge bg-success px-3 py-2">Activa</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger px-3 py-2">Inactiva</span>
+                                    }
+                                </div>
+
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a type="button" class="btn btn-outline-primary btn-sm" asp-page="./Detalle" asp-route-id="@ubicacion.Id">
+                                        <i class="bi bi-info-square"></i> Detalle
+                                    </a>
+                                    <a type="button" class="btn btn-outline-warning btn-sm" asp-page="./Editar" asp-route-id="@ubicacion.Id">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+                                    <a type="button" class="btn btn-outline-danger btn-sm" asp-page="./Eliminar" asp-route-id="@ubicacion.Id">
+                                        <i class="bi bi-trash3-fill"></i> Eliminar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-warning text-center shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> No hay ubicaciones registradas en el sistema.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -1,0 +1,72 @@
+﻿@page
+@model Inventario.Web.Pages.Categorias.IndexModel
+@{
+    ViewData["Title"] = "Listado de Categorías";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Listado de Categorías</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-heading text-uppercase">Categorías de Activos</h2>
+            <h3 class="section-subheading text-muted">Gestione la clasificación del inventario escolar.</h3>
+        </div>
+
+        <div class="text-center mb-4">
+            <a type="button" class="btn btn-success btn-lg shadow-sm" asp-page="./Agregar">
+                <i class="bi bi-plus-square me-2"></i> Agregar Nueva Categoría
+            </a>
+        </div>
+
+        <div class="row">
+            @if (Model.Categorias != null && Model.Categorias.Any())
+            {
+                @foreach (var categoria in Model.Categorias)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0">
+                            <div class="card-body text-center">
+                                <!-- Asumiendo que tu modelo tiene una propiedad Nombre -->
+                                <h5 class="card-title text-primary mb-3">
+                                    <i class="bi bi-tags-fill me-2"></i>@Html.DisplayFor(modelo => categoria.Nombre)
+                                </h5>
+
+                                <!-- Asumiendo que tu modelo tiene una propiedad Descripcion -->
+                                <p class="card-text text-muted mb-4">
+                                    @Html.DisplayFor(modelo => categoria.Descripcion)
+                                </p>
+
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a type="button" class="btn btn-outline-primary btn-sm" asp-page="./Detalle" asp-route-id="@categoria.Id">
+                                        <i class="bi bi-info-square"></i> Detalle
+                                    </a>
+                                    <a type="button" class="btn btn-outline-warning btn-sm" asp-page="./Editar" asp-route-id="@categoria.Id">
+                                        <i class="bi bi-pencil-square"></i> Editar
+                                    </a>
+                                    <a type="button" class="btn btn-outline-danger btn-sm" asp-page="./Eliminar" asp-route-id="@categoria.Id">
+                                        <i class="bi bi-trash3-fill"></i> Eliminar
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-warning text-center shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> No hay categorías registradas en el sistema.
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+}

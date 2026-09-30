@@ -1,4 +1,5 @@
-﻿using Abstracciones.Interfaces.DA;
+﻿using System.Runtime.InteropServices;
+using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.DA.Seguridad;
 using Abstracciones.Modelos.Seguridad;
 using Dapper;
@@ -18,6 +19,7 @@ namespace DA.Seguridad
             _sqlConnection = _repositorioDapper.ObtenerRepositorio();
         }
 
+
         public async Task<IEnumerable<Perfil>> ObtenerPerfilesxUsuario(Usuario usuario)
         {
            
@@ -26,7 +28,7 @@ namespace DA.Seguridad
           
             var consulta = await _sqlConnection.QueryAsync<Abstracciones.Entidades.Seguridad.Perfil>(
                 sql,
-                new { CorreoElectronico = usuario.CorreoElectronico, NombreUsuario = usuario.NombreUsuario }
+                new { IdUsuario = usuario.Id }
             );
 
             

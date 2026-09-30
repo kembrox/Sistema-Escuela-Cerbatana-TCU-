@@ -1,0 +1,54 @@
+﻿@page "{id:guid?}"
+@model Inventario.Web.Pages.Ubicaciones.EliminarModel
+@{
+    ViewData["Title"] = "Eliminar Ubicación";
+}
+
+<header class="subhead bg-danger text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="section-heading text-uppercase text-danger">Eliminar Ubicación</h2>
+            <h3 class="section-subheading text-muted">¿Está seguro de que desea eliminar este espacio físico?</h3>
+        </div>
+
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto bg-white p-4 p-md-5 rounded shadow">
+
+            <div class="alert alert-warning text-center mb-4">
+                <i class="bi bi-exclamation-triangle-fill fs-4 d-block mb-2"></i>
+                <strong>Advertencia:</strong> Esta acción es irreversible y eliminará la ubicación del sistema.
+            </div>
+
+            <dl class="row mb-4">
+                <dt class="col-sm-4 text-end text-muted">Nombre:</dt>
+                <dd class="col-sm-8 fw-bold text-dark">@Html.DisplayFor(model => model.Ubicacion.Nombre)</dd>
+
+                <dt class="col-sm-4 text-end text-muted">Tipo de Área:</dt>
+                <dd class="col-sm-8 text-dark">
+                    @(string.IsNullOrEmpty(Model.Ubicacion.TipoArea) ? "No especificado" : Model.Ubicacion.TipoArea)
+                </dd>
+
+                <dt class="col-sm-4 text-end text-muted">Estado:</dt>
+                <dd class="col-sm-8 text-dark">
+                    @(Model.Ubicacion.Estado ? "Activa" : "Inactiva")
+                </dd>
+            </dl>
+
+            <form method="post">
+                <!-- El ID oculto es el único dato que necesitamos enviar de vuelta a la API para borrar -->
+                <input type="hidden" asp-for="Ubicacion.Id" />
+
+                <div class="d-flex justify-content-center gap-3 mt-4">
+                    <a class="btn btn-outline-secondary" asp-page="./Index">Cancelar</a>
+                    <button type="submit" class="btn btn-danger"><i class="bi bi-trash3-fill"></i> Eliminar Definitivamente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

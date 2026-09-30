@@ -1,0 +1,63 @@
+﻿@page "{id:guid?}"
+@model Inventario.Web.Pages.Categorias.DetalleModel
+@{
+    ViewData["Title"] = "Detalle de Categoría";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container" style="max-width: 800px;">
+        <div class="text-center mb-4">
+            <h2 class="section-heading text-uppercase">Detalle de la Categoría</h2>
+            <h3 class="section-subheading text-muted">Información completa de la clasificación.</h3>
+        </div>
+
+        @if (Model.Categoria != null)
+        {
+            <div class="card mb-4 shadow-sm border-0">
+                <div class="row g-0">
+                    <!-- Columna decorativa con un ícono -->
+                    <div class="col-md-4 bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center p-4">
+                        <i class="bi bi-tags-fill text-primary" style="font-size: 5rem;"></i>
+                    </div>
+                    <!-- Columna con los datos -->
+                    <div class="col-md-8">
+                        <div class="card-body p-4">
+                            <h4 class="card-title text-primary mb-3">@Html.DisplayFor(modelo => modelo.Categoria.Nombre)</h4>
+
+                            <div class="mb-3">
+                                <h6 class="fw-bold text-dark mb-1">Descripción:</h6>
+                                <p class="card-text text-muted">@Html.DisplayFor(modelo => modelo.Categoria.Descripcion)</p>
+                            </div>
+
+                            <div class="mb-2">
+                                <h6 class="fw-bold text-dark mb-1">Identificador Interno (ID):</h6>
+                                <p class="card-text text-muted"><small>@Html.DisplayFor(modelo => modelo.Categoria.Id)</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <a class="btn btn-outline-secondary me-2" asp-page="./Index"><i class="bi bi-arrow-left"></i> Regresar</a>
+                <a class="btn btn-warning" asp-page="./Editar" asp-route-id="@Model.Categoria.Id"><i class="bi bi-pencil-square"></i> Editar</a>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-danger text-center shadow-sm" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> No se pudo cargar la información de la categoría.
+            </div>
+            <div class="text-center mt-3">
+                <a class="btn btn-primary" asp-page="./Index">Regresar al listado</a>
+            </div>
+        }
+    </div>
+</section>

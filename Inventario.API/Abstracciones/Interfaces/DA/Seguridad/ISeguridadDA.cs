@@ -6,5 +6,7 @@ namespace Abstracciones.Interfaces.DA.Seguridad
     {
         Task<Usuario> ObtenerUsuario(Usuario usuario);
         Task<IEnumerable<Perfil>> ObtenerPerfilesxUsuario(Usuario usuario);
+
+        
     }
 }

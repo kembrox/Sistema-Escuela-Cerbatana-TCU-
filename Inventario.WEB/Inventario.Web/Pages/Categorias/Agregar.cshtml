@@ -1,0 +1,53 @@
+﻿@page
+@model Inventario.Web.Pages.Categorias.AgregarModel
+@{
+    ViewData["Title"] = "Agregar Categoría";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="section-heading text-uppercase">Agregar Categoría</h2>
+            <h3 class="section-subheading text-muted">Complete los datos para registrar una nueva clasificación.</h3>
+        </div>
+
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto bg-white p-4 p-md-5 rounded shadow">
+            <form method="post">
+
+                <div class="form-group mb-3">
+                    <label class="control-label fw-bold" asp-for="Categoria.Nombre">Nombre de la Categoría</label>
+                    <input class="form-control" asp-for="Categoria.Nombre" placeholder="Ej: Mobiliario, Equipo de Cómputo..." required />
+                    <span class="text-danger" asp-validation-for="Categoria.Nombre"></span>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label class="control-label fw-bold" asp-for="Categoria.Descripcion">Descripción</label>
+                    <textarea class="form-control" asp-for="Categoria.Descripcion" rows="3" placeholder="Breve descripción de los activos que pertenecen a esta categoría..."></textarea>
+                    <span class="text-danger" asp-validation-for="Categoria.Descripcion"></span>
+                </div>
+
+                <div class="text-danger mb-3" asp-validation-summary="ModelOnly"></div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a class="btn btn-outline-secondary" asp-page="./Index"><i class="bi bi-arrow-left"></i> Regresar</a>
+                    <button type="submit" class="btn btn-success"><i class="bi bi-save"></i> Guardar</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Esta sección activa las validaciones de C# directamente en el navegador sin recargar la página -->
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

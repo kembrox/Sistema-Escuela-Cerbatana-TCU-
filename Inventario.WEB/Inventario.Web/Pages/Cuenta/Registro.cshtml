@@ -1,0 +1,44 @@
+﻿@page
+@model Inventario.Web.Pages.Cuenta.RegistroModel
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto bg-white p-4 p-md-5 rounded shadow">
+            <div class="text-center mb-4">
+                <h2 class="section-heading text-uppercase">Registrarse</h2>
+                <h3 class="section-subheading text-muted">Cree una cuenta para acceder al sistema.</h3>
+            </div>
+            <form method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                    <input type="text" asp-for="UsuarioFormulario.NombreUsuario" class="form-control" placeholder="Nombre de usuario" required />
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-envelope-at-fill"></i></span>
+                    <input type="email" asp-for="UsuarioFormulario.CorreoElectronico" class="form-control" placeholder="Correo electrónico" required />
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
+                    <!-- Nota: Mapeamos al campo que tu API espera para la contraseña -->
+                    <input type="password" asp-for="UsuarioFormulario.PasswordHash" class="form-control" placeholder="Contraseña" required />
+                </div>
+
+                <div class="d-grid gap-2 mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Registrarse</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

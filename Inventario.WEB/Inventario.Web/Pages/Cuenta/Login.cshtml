@@ -1,0 +1,62 @@
+﻿@page
+@model Inventario.Web.Pages.Cuenta.LoginModel
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-subheading">Sistema de Inventario</div>
+        <div class="masthead-heading text-uppercase">Escuela Cerbatana</div>
+    </div>
+</header>
+
+<section class="page-section bg-light py-5" id="principal">
+    <div class="container">
+        <div class="col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto bg-white p-4 p-md-5 rounded shadow">
+            <div class="text-center mb-4">
+                <h2 class="section-heading text-uppercase">Iniciar sesión</h2>
+                <h3 class="section-subheading text-muted">Ingrese sus credenciales para acceder.</h3>
+            </div>
+
+            <form method="post">
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-envelope-at"></i></span>
+                    <input type="email" placeholder="Correo electrónico" asp-for="LoginInfo.CorreoElectronico" class="form-control form-control-lg" required />
+                </div>
+                <div class="input-group mb-3">
+                    <span asp-validation-for="LoginInfo.CorreoElectronico" class="text-danger"></span>
+                </div>
+
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-key"></i></span>
+                    <!-- Nota: Usamos el campo PasswordHash porque así lo espera tu API para la clave plana -->
+                    <input type="password" placeholder="Contraseña" asp-for="LoginInfo.PasswordHash" class="form-control form-control-lg" required />
+                </div>
+                <div class="input-group mb-3">
+                    <span asp-validation-for="LoginInfo.PasswordHash" class="text-danger"></span>
+                </div>
+
+                @if (Model.TokenRespuesta is not null && Model.TokenRespuesta.ValidacionExitosa == false)
+                {
+                    <div class="alert alert-warning" role="alert">
+                        ¡Usuario o contraseña incorrectos!
+                    </div>
+                }
+
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-primary btn-lg" type="submit">Iniciar Sesión</button>
+                </div>
+            </form>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <hr class="mb-4 border-secondary-subtle" />
+                    <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-center">
+                        <a href="./Registro" class="link-secondary text-decoration-none">Crear una cuenta</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
