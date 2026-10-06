@@ -1,0 +1,96 @@
+﻿<!-- Tarjetas de Inventario -->
+<div class="row">
+    @if (Model.Inventarios != null && Model.Inventarios.Any())
+    {
+        @foreach (var activo in Model.Inventarios)
+        {
+            // ... [Tu código de las tarjetas que ya tienes, no lo cambies] ...
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm border-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary"><i class="bi bi-pc-display me-2"></i>@activo.CodigoFisico</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@activo.Marca @activo.Modelo</h6>
+                        <p class="card-text">@activo.Descripcion</p>
+
+                        <div class="mb-3">
+                            @if (activo.Estado)
+                            {
+                                <span class="badge bg-success">Activo</span>
+                            }
+                            else
+                            {
+
+                                <span class="badge bg-danger">Inactivo</span>
+                            }
+                        </div>
+
+                        <hr />
+                        <div class="d-flex justify-content-center gap-2">
+                            <a class="btn btn-outline-primary btn-sm" asp-page="./Detalle" asp-route-id="@activo.Id"><i class="bi bi-info-square"></i> Detalle</a>
+                            <a class="btn btn-outline-warning btn-sm" asp-page="./Editar" asp-route-id="@activo.Id"><i class="bi bi-pencil-square"></i> Editar</a>
+                            <a class="btn btn-outline-danger btn-sm" asp-page="./Eliminar" asp-route-id="@activo.Id"><i class="bi bi-trash"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-warning text-center shadow-sm w-100" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontraron activos con los filtros aplicados.
+            </div>
+        </div>
+    }
+</div>
+
+<!-- NUEVO: Controles de Paginación -->
+@if (Model.TotalPaginas > 1)
+{
+    <nav aria-label="Navegación de páginas de inventario" class="mt-4">
+        <ul class="pagination justify-content-center">
+
+            <!-- Botón Anterior -->
+            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index"
+                   asp-route-PaginaActual="@(Model.PaginaActual - 1)"
+                   asp-route-BuscarTexto="@Model.BuscarTexto"
+                   asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                   asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                   asp-route-BuscarEstado="@Model.BuscarEstado">
+                    <i class="bi bi-chevron-left"></i> Anterior
+                </a>
+            </li>
+
+            <!-- Números de Página -->
+            @for (int i = 1; i <= Model.TotalPaginas; i++)
+            {
+                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                    <a class="page-link" asp-page="./Index"
+                       asp-route-PaginaActual="@i"
+                       asp-route-BuscarTexto="@Model.BuscarTexto"
+                       asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                       asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                       asp-route-BuscarEstado="@Model.BuscarEstado">@i</a>
+                </li>
+            }
+
+            <!-- Botón Siguiente -->
+            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                <a class="page-link" asp-page="./Index"
+                   asp-route-PaginaActual="@(Model.PaginaActual + 1)"
+                   asp-route-BuscarTexto="@Model.BuscarTexto"
+                   asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                   asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                   asp-route-BuscarEstado="@Model.BuscarEstado">
+                    Siguiente <i class="bi bi-chevron-right"></i>
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}
+
+</div>
+</section>

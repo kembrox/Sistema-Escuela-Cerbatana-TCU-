@@ -1,0 +1,14 @@
+﻿@page "{id:guid?}"
+@model Inventario.Web.Pages.Inventarios.EliminarModel
+<header class="subhead bg-danger text-white text-center py-4"><div class="container"><div class="masthead-heading text-uppercase">Eliminar Activo</div></div></header>
+<section class="page-section bg-light py-5">
+    <div class="container col-lg-6 mx-auto bg-white p-5 rounded shadow text-center">
+        <h4 class="text-danger mb-4">¿Desea eliminar definitivamente el activo @Model.Activo.CodigoFisico?</h4>
+        <p><strong>Descripción:</strong> @Model.Activo.Descripcion</p>
+        <form method="post" class="mt-4">
+            <input type="hidden" asp-for="Activo.Id" />
+            <a class="btn btn-outline-secondary" asp-page="./Index">Cancelar</a>
+            <button type="submit" class="btn btn-danger">Eliminar Definitivamente</button>
+        </form>
+    </div>
+</section>

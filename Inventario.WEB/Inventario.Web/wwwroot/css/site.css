@@ -1,22 +1,126 @@
-html {
-  font-size: 14px;
+/* ==========================================================================
+   1. VARIABLES GLOBALES (Tus colores principales)
+   ========================================================================== */
+:root {
+    --color-primario: #0d6efd; /* Azul principal */
+    --color-secundario: #6c757d; /* Gris secundario */
+    --color-fondo: #f8f9fa; /* Gris muy claro para el fondo */
+    --color-texto: #333333; /* Gris oscuro para leer cómodamente */
+    --sombra-suave: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-@media (min-width: 768px) {
-  html {
+/* ==========================================================================
+   2. ESTILOS GENERALES (Cuerpo y estructura básica)
+   ========================================================================== */
+html {
     font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: var(--color-fondo);
+    color: var(--color-texto);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Margen inferior para que el footer no tape el contenido */
+    margin-bottom: 80px;
+}
+
+/* Contenedor principal donde se inyectan tus vistas */
+.contenedor-principal {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* ==========================================================================
+   3. BARRA DE NAVEGACIÓN (Navbar)
+   ========================================================================== */
+.navbar-custom {
+    background-color: white;
+    box-shadow: var(--sombra-suave);
+    padding: 1rem 0;
+}
+
+    .navbar-custom .navbar-brand {
+        font-weight: bold;
+        color: var(--color-primario);
+        font-size: 1.5rem;
+    }
+
+    .navbar-custom .nav-link {
+        font-weight: 500;
+        color: var(--color-secundario);
+        transition: color 0.3s ease;
+    }
+
+        .navbar-custom .nav-link:hover,
+        .navbar-custom .nav-link.active {
+            color: var(--color-primario);
+        }
+
+/* ==========================================================================
+   4. TARJETAS (Cards para los listados de Inventario)
+   ========================================================================== */
+.card-custom {
+    border: none;
+    border-radius: 10px;
+    box-shadow: var(--sombra-suave);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    /* Efecto de elevación al pasar el mouse sobre la tarjeta */
+    .card-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+
+.card-header-custom {
+    background-color: white;
+    border-bottom: 2px solid var(--color-fondo);
+    font-weight: bold;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+}
+
+/* ==========================================================================
+   5. BOTONES (Personalización de acciones)
+   ========================================================================== */
+.btn-redondeado {
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+/* ==========================================================================
+   6. PIE DE PÁGINA (Footer)
+   ========================================================================== */
+.footer-custom {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background-color: white;
+    border-top: 1px solid #e9ecef;
+    text-align: center;
+    color: var(--color-secundario);
+    font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   7. DISEÑO RESPONSIVO (Ajustes para celulares)
+   ========================================================================== */
+@media (max-width: 768px) {
+    .contenedor-principal {
+        padding-top: 1rem;
+    }
+
+    .btn-redondeado {
+        width: 100%; /* Botones ocupan todo el ancho en celulares */
+        margin-bottom: 0.5rem;
+    }
 }

@@ -1,51 +1,85 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Inventario.Web</title>
+    <title>@ViewData["Title"] - Sistema de Inventario</title>
+
+    <!-- 1. REFERENCIAS A LIBRERÍAS EXTERNAS (Bootstrap y los iconos) -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- 2. REFERENCIA A TUS ESTILOS PERSONALIZADOS (El CSS que acabamos de crear) -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Inventario.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+
+    <!-- ====================================================================
+         SECCIÓN 1: BARRA DE NAVEGACIÓN (Se muestra arriba en todas las pantallas)
+         ==================================================================== -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <!-- 'navbar-expand-lg' hace que el menú se convierta en un botón de 3 rayas en celulares -->
+        <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">Inventario.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <!-- Logotipo o Título -->
+                <a class="navbar-brand" asp-area="" asp-page="/Index">
+                    <i class="bi bi-box-seam text-primary me-2"></i>Escuela Cerbatana
+                </a>
+
+                <!-- Botón hamburguesa para celulares -->
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menuPrincipal" aria-controls="menuPrincipal" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <!-- Enlaces de navegación -->
+                <div class="collapse navbar-collapse" id="menuPrincipal">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link" asp-area="" asp-page="/Inventarios/Index">
+                                <i class="bi bi-pc-display me-1"></i> Inventario
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            <a class="nav-link" asp-area="" asp-page="/Ubicaciones/Index">
+                                <i class="bi bi-geo-alt me-1"></i> Ubicaciones
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Categorias/Index">
+                                <i class="bi bi-tags me-1"></i> Categorías
+                            </a>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <!-- ====================================================================
+         SECCIÓN 2: CONTENEDOR PRINCIPAL (Aquí se inyecta tu código de Index, Agregar, etc.)
+         ==================================================================== -->
+    <main role="main" class="contenedor-principal">
+        <!-- RenderBody() es el agujero donde ASP.NET inserta el contenido dinámico -->
+        @RenderBody()
+    </main>
+
+    <!-- ====================================================================
+         SECCIÓN 3: PIE DE PÁGINA (Se muestra abajo en todas las pantallas)
+         ==================================================================== -->
+    <footer class="footer-custom">
         <div class="container">
-            &copy; 2026 - Inventario.Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2026 - Sistema de Inventario TCU - <a asp-area="" asp-page="/Privacy" class="text-decoration-none">Privacidad</a>
         </div>
     </footer>
 
+    <!-- ====================================================================
+         SECCIÓN 4: SCRIPTS DE JAVASCRIPT
+         ==================================================================== -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
+    <!-- Esto permite inyectar scripts específicos de cada página (como validaciones) -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

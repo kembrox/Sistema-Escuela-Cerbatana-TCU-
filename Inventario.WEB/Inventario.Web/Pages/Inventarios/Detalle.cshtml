@@ -1,0 +1,19 @@
+﻿@page "{id:guid?}"
+@model Inventario.Web.Pages.Inventarios.DetalleModel
+<header class="subhead bg-primary text-white text-center py-4"><div class="container"><div class="masthead-heading text-uppercase">Detalle del Activo</div></div></header>
+<section class="page-section bg-light py-5">
+    <div class="container col-lg-8 mx-auto bg-white p-5 rounded shadow">
+        @if (Model.Activo != null)
+        {
+            <h3 class="text-primary border-bottom pb-2">@Model.Activo.CodigoFisico</h3>
+            <div class="row mt-4">
+                <div class="col-md-6"><p><strong>Descripción:</strong> @Model.Activo.Descripcion</p><p><strong>Marca:</strong> @Model.Activo.Marca</p><p><strong>Modelo:</strong> @Model.Activo.Modelo</p></div>
+                <div class="col-md-6"><p><strong>Serie:</strong> @Model.Activo.Serie</p><p><strong>Precio:</strong> ₡@Model.Activo.Precio</p><p><strong>Estado:</strong> @(Model.Activo.Estado ? "Activo" : "Inactivo")</p></div>
+            </div>
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a class="btn btn-outline-secondary" asp-page="./Index">Regresar</a>
+                <a class="btn btn-warning" asp-page="./Editar" asp-route-id="@Model.Activo.Id">Editar</a>
+            </div>
+        }
+    </div>
+</section>

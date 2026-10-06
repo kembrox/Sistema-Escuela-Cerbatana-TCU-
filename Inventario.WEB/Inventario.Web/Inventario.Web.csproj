@@ -11,8 +11,4 @@
     <ProjectReference Include="..\..\Inventario.API\Reglas\Reglas.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\Activos\" />
-  </ItemGroup>
-
 </Project>
