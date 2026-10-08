@@ -10,24 +10,73 @@ namespace Inventario.Web.Pages.Inventarios
     [Authorize]
     public class DetalleModel : PageModel
     {
-        private readonly IConfiguration _config; private readonly IHttpClientFactory _http;
+        private readonly IConfiguration _configuracion;
+        private readonly IHttpClientFactory _httpClientFactory;
+
         public InventarioResponse Activo { get; set; } = default!;
 
-        public DetalleModel(IConfiguration config, IHttpClientFactory http) { _config = config; _http = http; }
+        // 1. Nuevas variables para guardar los nombres traducidos
+        public string NombreCategoria { get; set; } = "Desconocida";
+        public string NombreUbicacion { get; set; } = "Desconocida";
+
+        public DetalleModel(IConfiguration configuracion, IHttpClientFactory httpClientFactory)
+        {
+            _configuracion = configuracion;
+            _httpClientFactory = httpClientFactory;
+        }
 
         public async Task<IActionResult> OnGetAsync(Guid? id)
         {
-            if (id == null) return RedirectToPage("./Index");
-            var end = _config.GetSection("ApiEndPoints:Metodos").Get<List<MetodoConfiguracion>>()?.FirstOrDefault(m => m.Nombre == "ObtenerInventarioPorId")?.Valor;
-            var cliente = _http.CreateClient("InventarioAPI");
-            var token = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Token")?.Value;
-            if (!string.IsNullOrEmpty(token)) cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            if (id == null) return NotFound();
 
-            var res = await cliente.GetAsync(string.Format(end, id));
-            if (res.IsSuccessStatusCode)
+            var metodos = _configuracion.GetSection("ApiEndPoints:Metodos").Get<List<MetodoConfiguracion>>();
+            var cliente = _httpClientFactory.CreateClient("InventarioAPI");
+            var token = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Token")?.Value;
+
+            if (!string.IsNullOrEmpty(token))
             {
-                Activo = JsonSerializer.Deserialize<InventarioResponse>(await res.Content.ReadAsStringAsync(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                return Page();
+                cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var opciones = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+
+            var endInventario = metodos?.FirstOrDefault(m => m.Nombre == "ObtenerInventarioPorId")?.Valor;
+            if (!string.IsNullOrEmpty(endInventario))
+            {
+                var resInventario = await cliente.GetAsync(string.Format(endInventario, id));
+                if (resInventario.IsSuccessStatusCode)
+                {
+                    // Descargamos el activo principal
+                    Activo = JsonSerializer.Deserialize<InventarioResponse>(await resInventario.Content.ReadAsStringAsync(), opciones) ?? new InventarioResponse();
+
+                    // 2. Buscamos el nombre real de la Categoría
+                    var endCat = metodos?.FirstOrDefault(m => m.Nombre == "ObtenerCategorias")?.Valor;
+                    if (!string.IsNullOrEmpty(endCat))
+                    {
+                        var resCat = await cliente.GetAsync(endCat);
+                        if (resCat.IsSuccessStatusCode)
+                        {
+                            var categorias = JsonSerializer.Deserialize<List<CategoriaResponse>>(await resCat.Content.ReadAsStringAsync(), opciones);
+                            var categoriaEncontrada = categorias?.FirstOrDefault(c => c.Id == Activo.IdCategoria);
+                            if (categoriaEncontrada != null) NombreCategoria = categoriaEncontrada.Nombre;
+                        }
+                    }
+
+                    // 3. Buscamos el nombre real de la Ubicación
+                    var endUbi = metodos?.FirstOrDefault(m => m.Nombre == "ObtenerUbicaciones")?.Valor;
+                    if (!string.IsNullOrEmpty(endUbi))
+                    {
+                        var resUbi = await cliente.GetAsync(endUbi);
+                        if (resUbi.IsSuccessStatusCode)
+                        {
+                            var ubicaciones = JsonSerializer.Deserialize<List<UbicacionResponse>>(await resUbi.Content.ReadAsStringAsync(), opciones);
+                            var ubicacionEncontrada = ubicaciones?.FirstOrDefault(u => u.Id == Activo.IdUbicacion);
+                            if (ubicacionEncontrada != null) NombreUbicacion = ubicacionEncontrada.Nombre;
+                        }
+                    }
+
+                    return Page();
+                }
             }
             return RedirectToPage("./Index");
         }

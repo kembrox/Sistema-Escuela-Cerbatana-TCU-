@@ -1,10 +1,12 @@
 using System.Net.Http.Headers;
 using System.Text.Json;
+using Abstracciones.Interfaces.Reglas;
 using Abstracciones.Modelos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Reglas;
 
 namespace Inventario.Web.Pages.Inventarios
 {
@@ -13,6 +15,7 @@ namespace Inventario.Web.Pages.Inventarios
     {
         private readonly IConfiguration _configuracion;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IReportesHelper _reportesHelper; // 1. Inyectamos tu helper
 
         public IList<InventarioResponse> Inventarios { get; set; } = default!;
 
@@ -38,10 +41,11 @@ namespace Inventario.Web.Pages.Inventarios
         public List<SelectListItem> ListaCategorias { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> ListaUbicaciones { get; set; } = new List<SelectListItem>();
 
-        public IndexModel(IConfiguration configuracion, IHttpClientFactory httpClientFactory)
+        public IndexModel(IConfiguration configuracion, IHttpClientFactory httpClientFactory, IReportesHelper reportesHelper)
         {
             _configuracion = configuracion;
             _httpClientFactory = httpClientFactory;
+            _reportesHelper = reportesHelper;
         }
 
         public async Task OnGetAsync()
@@ -132,6 +136,57 @@ namespace Inventario.Web.Pages.Inventarios
                         .ToList();
                 }
             }
+        }
+
+        public async Task<IActionResult> OnGetExportarExcelAsync()
+        {
+            var activos = await ObtenerListaActivosParaReporte();
+            if (activos == null || !activos.Any()) return RedirectToPage("./Index");
+
+            byte[] archivoBytes = _reportesHelper.GenerarExcelInventario(activos);
+
+            return File(
+                archivoBytes,
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                $"Inventario_Escuela_{DateTime.Now:yyyyMMdd}.xlsx"
+            );
+        }
+
+        // 3. Método para descargar el PDF (.pdf)
+        public async Task<IActionResult> OnGetExportarPdfAsync()
+        {
+            var activos = await ObtenerListaActivosParaReporte();
+            if (activos == null || !activos.Any()) return RedirectToPage("./Index");
+
+            byte[] archivoBytes = _reportesHelper.GenerarPdfInventario(activos);
+
+            return File(
+                archivoBytes,
+                "application/pdf",
+                $"Inventario_Escuela_{DateTime.Now:yyyyMMdd}.pdf"
+            );
+        }
+
+        // Método auxiliar para descargar los datos desde la API
+        private async Task<List<InventarioResponse>> ObtenerListaActivosParaReporte()
+        {
+            var metodos = _configuracion.GetSection("ApiEndPoints:Metodos").Get<List<MetodoConfiguracion>>();
+            var cliente = _httpClientFactory.CreateClient("InventarioAPI");
+            var token = HttpContext.User.Claims.FirstOrDefault(c => c.Type == "Token")?.Value;
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+            }
+
+            var endInv = metodos?.FirstOrDefault(m => m.Nombre == "ObtenerInventarios")?.Valor;
+            if (string.IsNullOrEmpty(endInv)) return new List<InventarioResponse>();
+
+            var res = await cliente.GetAsync(endInv);
+            if (!res.IsSuccessStatusCode) return new List<InventarioResponse>();
+
+            var opciones = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+            return JsonSerializer.Deserialize<List<InventarioResponse>>(await res.Content.ReadAsStringAsync(), opciones) ?? new List<InventarioResponse>();
         }
     }
 

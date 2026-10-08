@@ -15,6 +15,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         opciones.AccessDeniedPath = "/Cuenta/AccesoDenegado"; // Redirige aquí si no tienen permiso
         opciones.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Tiempo de la sesión (ej. 60 minutos)
     });
+builder.Services.AddScoped<IReportesHelper, ReportesHelper>();
 builder.Services.AddHttpClient("InventarioAPI", client =>
 {
     // Leemos la URL de la API desde tu appsettings.json

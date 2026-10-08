@@ -1,96 +1,173 @@
-﻿<!-- Tarjetas de Inventario -->
-<div class="row">
-    @if (Model.Inventarios != null && Model.Inventarios.Any())
-    {
-        @foreach (var activo in Model.Inventarios)
-        {
-            // ... [Tu código de las tarjetas que ya tienes, no lo cambies] ...
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary"><i class="bi bi-pc-display me-2"></i>@activo.CodigoFisico</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">@activo.Marca @activo.Modelo</h6>
-                        <p class="card-text">@activo.Descripcion</p>
-
-                        <div class="mb-3">
-                            @if (activo.Estado)
-                            {
-                                <span class="badge bg-success">Activo</span>
-                            }
-                            else
-                            {
-
-                                <span class="badge bg-danger">Inactivo</span>
-                            }
-                        </div>
-
-                        <hr />
-                        <div class="d-flex justify-content-center gap-2">
-                            <a class="btn btn-outline-primary btn-sm" asp-page="./Detalle" asp-route-id="@activo.Id"><i class="bi bi-info-square"></i> Detalle</a>
-                            <a class="btn btn-outline-warning btn-sm" asp-page="./Editar" asp-route-id="@activo.Id"><i class="bi bi-pencil-square"></i> Editar</a>
-                            <a class="btn btn-outline-danger btn-sm" asp-page="./Eliminar" asp-route-id="@activo.Id"><i class="bi bi-trash"></i></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="alert alert-warning text-center shadow-sm w-100" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontraron activos con los filtros aplicados.
-            </div>
-        </div>
-    }
-</div>
-
-<!-- NUEVO: Controles de Paginación -->
-@if (Model.TotalPaginas > 1)
-{
-    <nav aria-label="Navegación de páginas de inventario" class="mt-4">
-        <ul class="pagination justify-content-center">
-
-            <!-- Botón Anterior -->
-            <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-PaginaActual="@(Model.PaginaActual - 1)"
-                   asp-route-BuscarTexto="@Model.BuscarTexto"
-                   asp-route-BuscarCategoria="@Model.BuscarCategoria"
-                   asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
-                   asp-route-BuscarEstado="@Model.BuscarEstado">
-                    <i class="bi bi-chevron-left"></i> Anterior
-                </a>
-            </li>
-
-            <!-- Números de Página -->
-            @for (int i = 1; i <= Model.TotalPaginas; i++)
-            {
-                <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
-                    <a class="page-link" asp-page="./Index"
-                       asp-route-PaginaActual="@i"
-                       asp-route-BuscarTexto="@Model.BuscarTexto"
-                       asp-route-BuscarCategoria="@Model.BuscarCategoria"
-                       asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
-                       asp-route-BuscarEstado="@Model.BuscarEstado">@i</a>
-                </li>
-            }
-
-            <!-- Botón Siguiente -->
-            <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
-                <a class="page-link" asp-page="./Index"
-                   asp-route-PaginaActual="@(Model.PaginaActual + 1)"
-                   asp-route-BuscarTexto="@Model.BuscarTexto"
-                   asp-route-BuscarCategoria="@Model.BuscarCategoria"
-                   asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
-                   asp-route-BuscarEstado="@Model.BuscarEstado">
-                    Siguiente <i class="bi bi-chevron-right"></i>
-                </a>
-            </li>
-
-        </ul>
-    </nav>
+﻿@page
+@model Inventario.Web.Pages.Inventarios.IndexModel
+@{
+    ViewData["Title"] = "Inventario";
 }
 
-</div>
-</section>
+<!-- CABECERA DE LA PÁGINA -->
+<header class="bg-primary text-white py-3 shadow-sm mb-4">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+
+        <!-- Título principal a la izquierda -->
+        <h4 class="text-uppercase mb-3 mb-md-0 fw-bold m-0">
+            Inventario de Activos
+        </h4>
+
+        <!-- Botones de Exportación a la derecha en la misma línea -->
+        <div class="d-flex gap-2">
+            <a asp-page-handler="ExportarExcel" class="btn btn-success btn-sm fw-bold shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i> Descargar Excel
+            </a>
+            <a asp-page-handler="ExportarPdf" class="btn btn-danger btn-sm fw-bold shadow-sm">
+                <i class="bi bi-file-earmark-pdf me-1"></i> Descargar PDF
+            </a>
+        </div>
+
+    </div>
+</header>
+
+<!-- SECCIÓN PRINCIPAL -->
+<section class="page-section bg-light py-5">
+    <div class="container">
+
+        <!-- BOTÓN AGREGAR -->
+        <div class="text-center mb-4">
+            <a class="btn btn-success btn-lg shadow-sm btn-redondeado" asp-page="./Agregar">
+                <i class="bi bi-plus-square me-2"></i> Registrar Activo
+            </a>
+        </div>
+
+        <!-- SECCIÓN DE FILTROS -->
+        <div class="card mb-5 shadow-sm border-0 bg-white p-4 card-custom">
+            <form method="get">
+                <div class="row g-3 align-items-end">
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary" asp-for="BuscarTexto"><i class="bi bi-search me-1"></i> Búsqueda Libre</label>
+                        <input type="text" class="form-control" asp-for="BuscarTexto" placeholder="Placa, marca, modelo..." />
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary" asp-for="BuscarCategoria"><i class="bi bi-tags-fill me-1"></i> Categoría</label>
+                        <select class="form-select" asp-for="BuscarCategoria" asp-items="Model.ListaCategorias">
+                            <option value="">Todas las categorías</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary" asp-for="BuscarUbicacion"><i class="bi bi-geo-alt-fill me-1"></i> Ubicación</label>
+                        <select class="form-select" asp-for="BuscarUbicacion" asp-items="Model.ListaUbicaciones">
+                            <option value="">Todas las ubicaciones</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold text-secondary" asp-for="BuscarEstado"><i class="bi bi-toggle-on me-1"></i> Estado</label>
+                        <select class="form-select" asp-for="BuscarEstado">
+                            <option value="">Todos</option>
+                            <option value="true">Solo Activos</option>
+                            <option value="false">Solo Inactivos</option>
+                        </select>
+                    </div>
+
+                    <div class="col-12 d-flex justify-content-center gap-3 mt-4">
+                        <button type="submit" class="btn btn-primary px-4 btn-redondeado"><i class="bi bi-funnel-fill"></i> Aplicar Filtros</button>
+                        <a asp-page="./Index" class="btn btn-outline-secondary px-4 btn-redondeado">Limpiar Todo</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- TARJETAS DE INVENTARIO -->
+        <div class="row">
+            @if (Model.Inventarios != null && Model.Inventarios.Any())
+            {
+                @foreach (var activo in Model.Inventarios)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm border-0 card-custom">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary"><i class="bi bi-pc-display me-2"></i>@activo.CodigoFisico</h5>
+                                <h6 class="card-subtitle mb-2 text-muted">@activo.Marca @activo.Modelo</h6>
+                                <p class="card-text">@activo.Descripcion</p>
+
+                                <div class="mb-3">
+                                    @if (activo.Estado)
+                                    {
+                                        <span class="badge bg-success">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    }
+                                </div>
+
+                                <hr />
+                                <div class="d-flex justify-content-center gap-2">
+                                    <a class="btn btn-outline-primary btn-sm" asp-page="./Detalle" asp-route-id="@activo.Id"><i class="bi bi-info-square"></i> Detalle</a>
+                                    <a class="btn btn-outline-warning btn-sm" asp-page="./Editar" asp-route-id="@activo.Id"><i class="bi bi-pencil-square"></i> Editar</a>
+                                    <a class="btn btn-outline-danger btn-sm" asp-page="./Eliminar" asp-route-id="@activo.Id"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="alert alert-warning text-center shadow-sm w-100" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> No se encontraron activos con los filtros aplicados.
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- CONTROLES DE PAGINACIÓN -->
+        @if (Model.TotalPaginas > 1)
+        {
+            <nav aria-label="Navegación de páginas de inventario" class="mt-4">
+                <ul class="pagination justify-content-center">
+
+                    <!-- Botón Anterior -->
+                    <li class="page-item @(Model.PaginaActual == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-PaginaActual="@(Model.PaginaActual - 1)"
+                           asp-route-BuscarTexto="@Model.BuscarTexto"
+                           asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                           asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                           asp-route-BuscarEstado="@Model.BuscarEstado">
+                            <i class="bi bi-chevron-left"></i> Anterior
+                        </a>
+                    </li>
+
+                    <!-- Números de Página -->
+                    @for (int i = 1; i <= Model.TotalPaginas; i++)
+                    {
+                        <li class="page-item @(i == Model.PaginaActual ? "active" : "")">
+                            <a class="page-link" asp-page="./Index"
+                               asp-route-PaginaActual="@i"
+                               asp-route-BuscarTexto="@Model.BuscarTexto"
+                               asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                               asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                               asp-route-BuscarEstado="@Model.BuscarEstado">@i</a>
+                        </li>
+                    }
+
+                    <!-- Botón Siguiente -->
+                    <li class="page-item @(Model.PaginaActual == Model.TotalPaginas ? "disabled" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-PaginaActual="@(Model.PaginaActual + 1)"
+                           asp-route-BuscarTexto="@Model.BuscarTexto"
+                           asp-route-BuscarCategoria="@Model.BuscarCategoria"
+                           asp-route-BuscarUbicacion="@Model.BuscarUbicacion"
+                           asp-route-BuscarEstado="@Model.BuscarEstado">
+                            Siguiente <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+
+    </div> <!-- Cierre del container -->
+</section> <!-- Cierre del section -->

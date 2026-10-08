@@ -1,19 +1,102 @@
 ﻿@page "{id:guid?}"
 @model Inventario.Web.Pages.Inventarios.DetalleModel
-<header class="subhead bg-primary text-white text-center py-4"><div class="container"><div class="masthead-heading text-uppercase">Detalle del Activo</div></div></header>
-<section class="page-section bg-light py-5">
-    <div class="container col-lg-8 mx-auto bg-white p-5 rounded shadow">
-        @if (Model.Activo != null)
-        {
-            <h3 class="text-primary border-bottom pb-2">@Model.Activo.CodigoFisico</h3>
-            <div class="row mt-4">
-                <div class="col-md-6"><p><strong>Descripción:</strong> @Model.Activo.Descripcion</p><p><strong>Marca:</strong> @Model.Activo.Marca</p><p><strong>Modelo:</strong> @Model.Activo.Modelo</p></div>
-                <div class="col-md-6"><p><strong>Serie:</strong> @Model.Activo.Serie</p><p><strong>Precio:</strong> ₡@Model.Activo.Precio</p><p><strong>Estado:</strong> @(Model.Activo.Estado ? "Activo" : "Inactivo")</p></div>
-            </div>
-            <div class="d-flex justify-content-center gap-3 mt-4">
-                <a class="btn btn-outline-secondary" asp-page="./Index">Regresar</a>
-                <a class="btn btn-warning" asp-page="./Editar" asp-route-id="@Model.Activo.Id">Editar</a>
-            </div>
-        }
+@{
+    ViewData["Title"] = "Detalle del Activo";
+}
+
+<header class="subhead bg-primary text-white text-center py-4">
+    <div class="container">
+        <div class="masthead-heading text-uppercase">Detalle del Activo</div>
     </div>
+</header>
+
+<section class="page-section bg-light py-5">
+    <!-- INICIO DE LA TARJETA BLANCA -->
+    <div class="container col-lg-8 mx-auto bg-white p-5 rounded shadow card-custom">
+
+        <!-- Título principal: Código del activo -->
+        <h2 class="text-primary border-bottom pb-3 mb-4">
+            <i class="bi bi-pc-display me-2"></i>@Model.Activo.CodigoFisico
+        </h2>
+
+        <!-- Sección 1: Información Principal -->
+        <h5 class="text-secondary mb-3"><i class="bi bi-info-circle me-2"></i>Información General</h5>
+        <div class="row mb-5">
+            <div class="col-md-12 mb-3">
+                <span class="fw-bold d-block">Descripción:</span>
+                <span class="text-muted">@Model.Activo.Descripcion</span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <span class="fw-bold d-block">Categoría:</span>
+                <span class="text-muted">@Model.NombreCategoria</span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <span class="fw-bold d-block">Ubicación:</span>
+                <span class="text-muted">@Model.NombreUbicacion</span>
+            </div>
+        </div>
+
+        <!-- Sección 2: Especificaciones Técnicas -->
+        <h5 class="text-secondary mb-3"><i class="bi bi-gear me-2"></i>Especificaciones</h5>
+        <div class="row mb-5">
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Marca:</span>
+                <span class="text-muted">@(string.IsNullOrEmpty(Model.Activo.Marca) ? "No especificada" : Model.Activo.Marca)</span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Modelo:</span>
+                <span class="text-muted">@(string.IsNullOrEmpty(Model.Activo.Modelo) ? "No especificado" : Model.Activo.Modelo)</span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Serie:</span>
+                <span class="text-muted">@(string.IsNullOrEmpty(Model.Activo.Serie) ? "No especificada" : Model.Activo.Serie)</span>
+            </div>
+        </div>
+
+        <!-- Sección 3: Datos Administrativos -->
+        <h5 class="text-secondary mb-3"><i class="bi bi-journal-text me-2"></i>Datos Administrativos</h5>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Precio:</span>
+                <span class="text-muted">
+                    @(Model.Activo.Precio.HasValue ? $"₡ {Model.Activo.Precio.Value.ToString("N2")}" : "No asignado")
+                </span>
+            </div>
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Estado:</span>
+                @if (Model.Activo.Estado)
+                {
+                    <span class="badge bg-success">Activo Funcional</span>
+                }
+                else
+                {
+                    <span class="badge bg-danger">Inactivo / Dañado</span>
+                }
+            </div>
+            <div class="col-md-4 mb-3">
+                <span class="fw-bold d-block">Fecha de Registro:</span>
+                <span class="text-muted">
+                    @(Model.Activo.FechaRegistro.HasValue? Model.Activo.FechaRegistro.Value.ToString("dd/MM/yyyy") : "Desconocida")
+                </span>
+            </div>
+            <div class="col-md-12 mt-2">
+                <span class="fw-bold d-block">Observaciones:</span>
+                <p class="text-muted">@(string.IsNullOrEmpty(Model.Activo.Observaciones) ? "Sin observaciones adicionales." : Model.Activo.Observaciones)</p>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="d-flex justify-content-center gap-3 mt-5 border-top pt-4">
+            <a class="btn btn-outline-secondary btn-lg btn-redondeado px-4" asp-page="./Index">
+                <i class="bi bi-arrow-left me-2"></i>Regresar
+            </a>
+            <a class="btn btn-warning btn-lg btn-redondeado px-4" asp-page="./Editar" asp-route-id="@Model.Activo.Id">
+                <i class="bi bi-pencil-square me-2"></i>Editar Activo
+            </a>
+        </div>
+
+    </div>
+    <!-- FIN DE LA TARJETA BLANCA -->
 </section>

@@ -27,6 +27,10 @@ namespace Inventario.Web.Pages.Cuenta
 
         public async Task<IActionResult> OnPostAsync()
         {
+            // SOLUCIÓN 1: Le decimos a ASP.NET que no marque error si NombreUsuario viene vacío desde el HTML,
+            // ya que nosotros lo vamos a calcular manualmente un paso más abajo.
+            ModelState.Remove("LoginInfo.NombreUsuario");
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -65,7 +69,7 @@ namespace Inventario.Web.Pages.Cuenta
 
                     await EstablecerAutenticacion(claims);
 
-                    // Redirigimos a la página principal del inventario
+                    // SOLUCIÓN 2: Redirigimos correctamente a la carpeta Inventarios
                     return RedirectToPage("/Index");
                 }
             }

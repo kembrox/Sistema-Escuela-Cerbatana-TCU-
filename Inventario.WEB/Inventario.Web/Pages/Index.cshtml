@@ -1,5 +1,5 @@
 ﻿@page
-@model IndexModel
+@model Inventario.Web.Pages.IndexModel
 @{
     ViewData["Title"] = "Inicio";
 }
@@ -15,21 +15,70 @@
     {
         <div class="alert alert-success mt-4 w-75 mx-auto shadow-sm" role="alert">
             <h4 class="alert-heading"><i class="bi bi-person-check-fill me-2"></i>¡Bienvenido, @User.Identity.Name!</h4>
-            <p class="mb-0">Has iniciado sesión correctamente. Selecciona un módulo para comenzar a trabajar.</p>
+            <p class="mb-0">Has iniciado sesión correctamente. Aquí tienes el resumen general de la institución.</p>
         </div>
 
-        <div class="row mt-5 justify-content-center">
-            <div class="col-md-3 mb-3">
+        <!-- DASHBOARD ESTADÍSTICO -->
+        <div class="row g-4 mt-4 w-100 mx-auto text-start">
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-white h-100 p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-primary text-white p-3 rounded-3 fs-3"><i class="bi bi-box-seam"></i></div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Total Activos</h6>
+                            <h3 class="fw-bold mb-0 text-primary">@Model.TotalInventarios</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-white h-100 p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-success text-white p-3 rounded-3 fs-3"><i class="bi bi-check-circle"></i></div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Funcionales</h6>
+                            <h3 class="fw-bold mb-0 text-success">@Model.ActivosFuncionales</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-white h-100 p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-warning text-dark p-3 rounded-3 fs-3"><i class="bi bi-tags"></i></div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Categorías</h6>
+                            <h3 class="fw-bold mb-0 text-warning">@Model.TotalCategorias</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card border-0 shadow-sm bg-white h-100 p-3">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 bg-info text-white p-3 rounded-3 fs-3"><i class="bi bi-geo-alt"></i></div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="text-muted mb-1">Ubicaciones</h6>
+                            <h3 class="fw-bold mb-0 text-info">@Model.TotalUbicaciones</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACCESOS RÁPIDOS A MÓDULOS -->
+        <div class="row mt-5 justify-content-center w-100 mx-auto">
+            <div class="col-md-4 mb-3">
                 <a href="/Categorias" class="btn btn-outline-primary w-100 py-4 shadow-sm">
                     <i class="bi bi-tags-fill fs-1 d-block mb-2"></i> Categorías
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-4 mb-3">
                 <a href="/Ubicaciones" class="btn btn-outline-primary w-100 py-4 shadow-sm">
                     <i class="bi bi-geo-alt-fill fs-1 d-block mb-2"></i> Ubicaciones
                 </a>
             </div>
-            <div class="col-md-3 mb-3">
+            <div class="col-md-4 mb-3">
                 <a href="/Inventarios" class="btn btn-outline-primary w-100 py-4 shadow-sm">
                     <i class="bi bi-box-seam-fill fs-1 d-block mb-2"></i> Activos
                 </a>
@@ -38,7 +87,7 @@
     }
     else
     {
-        @* Vista para usuarios que no han iniciado sesión *@
+        @* Vista original para usuarios invitados *@
         <div class="mt-5">
             <p class="lead text-muted mb-5">
                 Gestión y control de activos institucionales. Por favor, identifíquese para acceder al sistema.
